@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public AppUser saveUser (AppUser user) {
-        log.info("Adding new user {} to database", user.getName());
+        log.info("Adding new user {} to database", user.getEmail());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
     }

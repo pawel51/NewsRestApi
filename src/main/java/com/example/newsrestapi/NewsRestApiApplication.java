@@ -35,14 +35,14 @@ public class NewsRestApiApplication {
             userService.saveRole(new Role(null, RolesEnum.ROLE_ADMIN));
             userService.saveRole(new Role(null, RolesEnum.ROLE_SUPERADMIN));
 
-            userService.saveUser(new AppUser(null, "John Travolta", "john", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Bruce Willic", "butch", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Katy Parry", "katy", "1234", new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "Uma Thurman", "uma", "1234", new ArrayList<>()));
+            userService.saveUser(new AppUser(null, "johnT@wp.pl", "John Travolta",  "1234", new ArrayList<>(), new ArrayList<>()));
+            userService.saveUser(new AppUser(null, "butch@protonmail.com", "Bruce Willic", "1234", new ArrayList<>(), new ArrayList<>()));
+            userService.saveUser(new AppUser(null,"kitty1234@o2.pl",  "Katy Parry" , "1234", new ArrayList<>(), new ArrayList<>()));
+            userService.saveUser(new AppUser(null, "umauma@onet.pl", "Uma Thurman" , "1234", new ArrayList<>(), new ArrayList<>()));
 
-            userService.addRoleToUser("john", ROLE_ADMIN.toString());
-            userService.addRoleToUser("john", ROLE_MANAGER.toString());
-            userService.addRoleToUser("uma", ROLE_USER.toString());
+            userService.addRoleToUser("John Travolta", ROLE_ADMIN.toString());
+            userService.addRoleToUser("John Travolta", ROLE_MANAGER.toString());
+            userService.addRoleToUser("Uma Thurman", ROLE_USER.toString());
         };
     }
 }
