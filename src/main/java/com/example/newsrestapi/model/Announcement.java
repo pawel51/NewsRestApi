@@ -18,7 +18,7 @@ import java.util.Date;
 public class Announcement {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    private Long id;
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "content", nullable = false)

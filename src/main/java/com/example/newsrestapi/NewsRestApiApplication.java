@@ -1,7 +1,9 @@
 package com.example.newsrestapi;
 
 import com.example.newsrestapi.model.AppUser;
+import com.example.newsrestapi.model.Category;
 import com.example.newsrestapi.model.Role;
+import com.example.newsrestapi.service.CategoryService;
 import com.example.newsrestapi.service.UserService;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import org.springframework.boot.CommandLineRunner;
@@ -28,7 +30,7 @@ public class NewsRestApiApplication {
     }
 
     @Bean
-    CommandLineRunner run(UserService userService){
+    CommandLineRunner run(UserService userService, CategoryService categoryService){
         return args -> {
             userService.saveRole(new Role(null, ROLE_USER));
             userService.saveRole(new Role(null, RolesEnum.ROLE_MANAGER));
@@ -43,6 +45,8 @@ public class NewsRestApiApplication {
             userService.addRoleToUser("John Travolta", ROLE_ADMIN.toString());
             userService.addRoleToUser("John Travolta", ROLE_MANAGER.toString());
             userService.addRoleToUser("Uma Thurman", ROLE_USER.toString());
+
+            categoryService.create(new Category(null, "Jobs", new ArrayList<>()));
         };
     }
 }
