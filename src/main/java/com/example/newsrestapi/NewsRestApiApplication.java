@@ -1,8 +1,7 @@
 package com.example.newsrestapi;
 
-import com.example.newsrestapi.model.AppUser;
-import com.example.newsrestapi.model.Category;
-import com.example.newsrestapi.model.Role;
+import com.example.newsrestapi.model.*;
+import com.example.newsrestapi.service.AnnouncementService;
 import com.example.newsrestapi.service.CategoryService;
 import com.example.newsrestapi.service.UserService;
 import com.example.newsrestapi.utils.enums.RolesEnum;
@@ -14,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.example.newsrestapi.utils.enums.RolesEnum.*;
 
@@ -30,14 +31,15 @@ public class NewsRestApiApplication {
     }
 
     @Bean
-    CommandLineRunner run(UserService userService, CategoryService categoryService){
+    CommandLineRunner run(UserService userService, CategoryService categoryService, AnnouncementService announcementService){
         return args -> {
             userService.saveRole(new Role(null, ROLE_USER));
             userService.saveRole(new Role(null, RolesEnum.ROLE_MANAGER));
             userService.saveRole(new Role(null, RolesEnum.ROLE_ADMIN));
             userService.saveRole(new Role(null, RolesEnum.ROLE_SUPERADMIN));
 
-            userService.saveUser(new AppUser(null, "johnT@wp.pl", "John Travolta",  "1234", new ArrayList<>(), new ArrayList<>()));
+            AppUser appUser = new AppUser(null, "johnT@wp.pl", "John Travolta",  "1234", new ArrayList<>(), new ArrayList<>());
+            userService.saveUser(appUser);
             userService.saveUser(new AppUser(null, "butch@protonmail.com", "Bruce Willic", "1234", new ArrayList<>(), new ArrayList<>()));
             userService.saveUser(new AppUser(null,"kitty1234@o2.pl",  "Katy Parry" , "1234", new ArrayList<>(), new ArrayList<>()));
             userService.saveUser(new AppUser(null, "umauma@onet.pl", "Uma Thurman" , "1234", new ArrayList<>(), new ArrayList<>()));
@@ -46,7 +48,16 @@ public class NewsRestApiApplication {
             userService.addRoleToUser("John Travolta", ROLE_MANAGER.toString());
             userService.addRoleToUser("Uma Thurman", ROLE_USER.toString());
 
-            categoryService.create(new Category(null, "Jobs", new ArrayList<>()));
+            Category category = new Category(null, "Jobs", new ArrayList<>());
+            categoryService.create(category);
+
+            Date tomorrow = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(tomorrow);
+            c.add(Calendar.DATE, 1);
+            tomorrow = c.getTime();
+            announcementService.create(new Announcement(null, "Paint 3D UI designer", "See the title", new Date(), tomorrow,
+                    AnnouncementState.NotPublic, appUser, category));
         };
     }
 }
