@@ -1,5 +1,7 @@
 package com.example.newsrestapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedQueries({
-        @NamedQuery(name="Category.findAll", query="SELECT c FROM Category c")
+        @NamedQuery(name="Category.GetCategories", query="SELECT c FROM Category c")
 })
 public class Category {
     @Id

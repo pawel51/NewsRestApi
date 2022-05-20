@@ -1,5 +1,6 @@
 package com.example.newsrestapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,9 +31,7 @@ public class Announcement {
     @Column(name = "announcement_state", nullable = false)
     private AnnouncementState announcementState;
     @ManyToOne
-    @JoinColumn(name = "app_user_id", referencedColumnName = "id", nullable = false)
     private AppUser appUser;
     @ManyToOne
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 }

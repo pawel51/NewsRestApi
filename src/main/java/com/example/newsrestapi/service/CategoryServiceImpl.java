@@ -18,8 +18,8 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void create(Category category) {
-        categoryRepository.save(category);
+    public Category create(Category category) {
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public void update(Category category) {
-        categoryRepository.save(category);
+    public Category update(Category category) {
+        return categoryRepository.save(category);
     }
 
     @Override
@@ -46,6 +46,11 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public List<Category> findAll() {
-        return categoryRepository.findAll();
+        return categoryRepository.GetCategories();
+    }
+    @Override
+    public boolean IsCategoryNameInDatabase(String name)
+    {
+        return categoryRepository.IsCategoryNameInDatabase(name);
     }
 }
