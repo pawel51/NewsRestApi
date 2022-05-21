@@ -101,6 +101,7 @@
                 <version>2.4.2</version>
                 <configuration>
                     <deploy.projectId>GCLOUD_CONFIG</deploy.projectId>
+                    <deploy.version>GCLOUD_CONFIG</deploy.version>
                 </configuration>
             </plugin>
         </plugins>
