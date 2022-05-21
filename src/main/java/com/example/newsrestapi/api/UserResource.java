@@ -39,7 +39,7 @@ public class UserResource {
                 TokenUtil tokenUtil = new TokenUtil();
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
                 // if exception not threw user is already autenticated
-                String username = tokenUtil.getUserName(refreshToken).getUserName();
+                String username = tokenUtil.getUserRoles(refreshToken).getUserName();
                 AppUser user = userService.getUser(username);
                 List<String> roles = user.getRoles().stream()
                         .map(Role::getName)
