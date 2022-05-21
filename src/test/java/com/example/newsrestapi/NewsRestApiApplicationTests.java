@@ -3,11 +3,7 @@ package com.example.newsrestapi;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest()
 class NewsRestApiApplicationTests {
-
-    @Test
-    void contextLoads () {
-    }
 
 }
