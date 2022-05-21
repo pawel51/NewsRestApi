@@ -1,9 +1,9 @@
 runtime: java
 env: flex
 runtime_config:
-  jdk: openjdk8
+  jdk: java11
 env_variables:
-  SPRING_PROFILES_ACTIVE: "gcp,postgres"
+  SPRING_PROFILES_ACTIVE: "cloud-gcp"
 handlers:
   - url: /.*
     script: this field is required, but ignored
