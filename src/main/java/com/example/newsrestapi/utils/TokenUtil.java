@@ -53,7 +53,7 @@ public class TokenUtil {
         return verifier.verify(token);
     }
 
-    public UserRoles getUserName (String token) {
+    public UserRoles getUserRoles (String token) {
         JWTVerifier verifier = JWT.require(ALGORITHM).build();
         DecodedJWT decodedJWT = verifier.verify(token);
         return new UserRoles(decodedJWT.getSubject(), null);
