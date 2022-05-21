@@ -99,6 +99,9 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
                 <version>2.4.2</version>
+                <configuration>
+                    <deploy.projectId>GCLOUD_CONFIG</deploy.projectId>
+                </configuration>
             </plugin>
         </plugins>
     </build>
