@@ -6,9 +6,11 @@ import com.example.newsrestapi.service.UserService;
 import com.example.newsrestapi.utils.TokenUtil;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dto.UserDto;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,6 +30,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
 public class UserResource {
     private final UserService userService;
+    private final ModelMapper modelMapper;
 
     // Odnawia access_token używając do tego refresh_token
     @GetMapping("/refreshtoken")
@@ -67,8 +70,13 @@ public class UserResource {
 
     // pobiera wszystkich użytkowników
     @GetMapping("/users")
-    public ResponseEntity<List<AppUser>> getUsers(){
-        return ResponseEntity.ok().body(userService.getUsers());
+    public ResponseEntity<List<UserDto>> getUsers(){
+
+        return ResponseEntity.ok().body(
+                userService.getUsers()
+                        .stream()
+                        .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList())
+        );
     }
 
     // zapisuje użytkownika do bazy (rejestracja)
