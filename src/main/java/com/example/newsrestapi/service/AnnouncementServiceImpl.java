@@ -18,8 +18,8 @@ public class AnnouncementServiceImpl implements AnnouncementService{
     }
 
     @Override
-    public void create(Announcement announcement) {
-        announcementRepository.save(announcement);
+    public Announcement create(Announcement announcement) {
+        return announcementRepository.save(announcement);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class AnnouncementServiceImpl implements AnnouncementService{
     }
 
     @Override
-    public void update(Announcement announcement) {
-        announcementRepository.save(announcement);
+    public Announcement update(Announcement announcement) {
+        return announcementRepository.save(announcement);
     }
 
     @Override
