@@ -6,6 +6,7 @@ import com.example.newsrestapi.repository.AnnouncementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,17 +48,21 @@ public class AnnouncementServiceImpl implements AnnouncementService{
     @Override
     public List<Announcement> findAllByApplicationUserID(long applicationUserID) {
         List<Announcement> announcementList = announcementRepository.findAllByUserID(applicationUserID);
+        Collections.sort(announcementList);
         return announcementList;
     }
 
     @Override
     public List<Announcement> findAllByCategoryID(long categoryID) {
         List<Announcement> announcementList = announcementRepository.findAllByCategoryID(categoryID);
+        Collections.sort(announcementList);
         return announcementList;
     }
 
     @Override
     public List<Announcement> findAll() {
-        return announcementRepository.findAll();
+        List<Announcement> announcementList = announcementRepository.findAll();
+        Collections.sort(announcementList);
+        return announcementList;
     }
 }

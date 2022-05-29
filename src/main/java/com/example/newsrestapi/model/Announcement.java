@@ -22,7 +22,7 @@ import java.util.Date;
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "id")
-public class Announcement {
+public class Announcement implements Comparable<Announcement>{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -42,4 +42,9 @@ public class Announcement {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Override
+    public int compareTo(Announcement o) {
+        return getCreationDate().compareTo(o.getCreationDate());
+    }
 }
