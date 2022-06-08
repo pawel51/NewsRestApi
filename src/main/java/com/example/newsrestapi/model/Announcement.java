@@ -1,6 +1,9 @@
 package com.example.newsrestapi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,10 +16,13 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "Announcement")
 @NamedQueries({
-        @NamedQuery(name="Announcement.findAllByCategoryID", query="SELECT a FROM Announcement a WHERE a.category.id = :cID"),
-        @NamedQuery(name="Announcement.findAllByUserID", query="SELECT a FROM Announcement a WHERE a.appUser.id = :aID")
+        @NamedQuery(name="Announcement.findAllByCategoryID", query="SELECT a FROM Announcement a WHERE a.category.id = :categoryID"),
+        @NamedQuery(name="Announcement.findAllByUserID", query="SELECT a FROM Announcement a WHERE a.appUser.id = :appUserID")
 })
-public class Announcement {
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
+public class Announcement implements Comparable<Announcement>{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -31,7 +37,14 @@ public class Announcement {
     @Column(name = "announcement_state", nullable = false)
     private AnnouncementState announcementState;
     @ManyToOne
+    @JoinColumn(name = "appuser_id")
     private AppUser appUser;
     @ManyToOne
+    @JoinColumn(name = "category_id")
     private Category category;
+
+    @Override
+    public int compareTo(Announcement o) {
+        return getCreationDate().compareTo(o.getCreationDate());
+    }
 }

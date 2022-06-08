@@ -1,7 +1,6 @@
 package com.example.newsrestapi.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,6 +15,9 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(name="Category.GetCategories", query="SELECT c FROM Category c")
 })
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
