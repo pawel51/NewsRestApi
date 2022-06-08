@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -56,6 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // ustaw dostęp tylko dla admina
         http.authorizeRequests().antMatchers(GET, "/api/users/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
+        http.authorizeRequests().antMatchers(POST, "/api/users/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
+        http.authorizeRequests().antMatchers(GET, "/api/adminpanel/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
+
 
 //      http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();

@@ -53,7 +53,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .collect(Collectors.toList());
         TokenUtil tokenUtil = new TokenUtil();
         // pass unique value about user
-        String accessToken = tokenUtil.GetToken(request, user, roles, 1);
+        String accessToken = tokenUtil.GetToken(request, user, roles, 1*6000);
         String refreshToken = tokenUtil.GetRefreshToken(request, user, 60 * 24);
 //        response.setHeader("access_token", accessToken);
 //        response.setHeader("refresh_token", refreshToken);

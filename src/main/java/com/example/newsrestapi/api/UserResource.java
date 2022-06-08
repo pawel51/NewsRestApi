@@ -79,6 +79,13 @@ public class UserResource {
         );
     }
 
+    @GetMapping("/users/edit/{username}")
+    public ResponseEntity <UserDto> editUser(@PathVariable String username) {
+        return ResponseEntity.ok().body(
+                modelMapper.map(userService.getUser(username), UserDto.class)
+        );
+    }
+
     // zapisuje użytkownika do bazy (rejestracja)
     @PostMapping("/users/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody AppUser user){
@@ -97,6 +104,17 @@ public class UserResource {
     @PostMapping("/role/addtouser")
     public ResponseEntity<?> addRolToUser(@RequestBody RoleToUserForm form){
         userService.addRoleToUser(form.getUsername(), form.getRolename());
+        return ResponseEntity.ok().build();
+    }
+
+    // przypisanie roli do użytkownika
+    @PostMapping("/role/addtouser/{username}")
+    public ResponseEntity<?> addRoleToUser(@PathVariable String username, @RequestBody ArrayList roles){
+
+        for (int i = 0; i < roles.toArray().length; i++) {
+            userService.addRoleToUser(userService.getUser(username).toString(), roles.get(i).toString());
+        }
+
         return ResponseEntity.ok().build();
     }
 
