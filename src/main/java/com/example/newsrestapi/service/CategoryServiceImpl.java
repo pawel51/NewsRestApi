@@ -48,6 +48,12 @@ public class CategoryServiceImpl implements CategoryService{
     public List<Category> findAll() {
         return categoryRepository.GetCategories();
     }
+
+    @Override
+    public void deleteAll() {
+        categoryRepository.deleteAll();
+    }
+
     @Override
     public boolean IsCategoryNameInDatabase(String name)
     {
