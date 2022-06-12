@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -31,6 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UserResource {
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final TokenUtil tokenUtil;
 
     // Odnawia access_token używając do tego refresh_token
     @GetMapping("/refreshtoken")
@@ -39,7 +41,7 @@ public class UserResource {
         String authorizationHeader = request.getHeader(AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")){
             try {
-                TokenUtil tokenUtil = new TokenUtil();
+//                TokenUtil tokenUtil = new TokenUtil();
                 String refreshToken = authorizationHeader.substring("Bearer ".length());
                 // if exception not threw user is already autenticated
                 String username = tokenUtil.getUserRoles(refreshToken).getUserName();
@@ -91,6 +93,13 @@ public class UserResource {
     public ResponseEntity<Role> saveRole(@RequestBody Role role){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
+    }
+
+    @GetMapping("/roles")
+    public Collection<Role> getUserRoles(Principal principal){
+        AppUser user = userService.getUser(principal.getName());
+
+        return user.getRoles();
     }
 
     // przypisanie roli do użytkownika

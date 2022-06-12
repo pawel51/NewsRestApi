@@ -29,9 +29,11 @@ import java.util.stream.Collectors;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final TokenUtil tokenUtil;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtil tokenUtil){
         this.authenticationManager = authenticationManager;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
