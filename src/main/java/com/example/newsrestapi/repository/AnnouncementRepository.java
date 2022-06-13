@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
     List<Announcement> findAllByCategoryID(long categoryID);
-    List<Announcement> findAllByUserID(long userID);
+    List<Announcement> findAllByAppUserId(long userID);
 }

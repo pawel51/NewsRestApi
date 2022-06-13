@@ -29,9 +29,11 @@ import java.util.stream.Collectors;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final TokenUtil tokenUtil;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager){
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, TokenUtil tokenUtil){
         this.authenticationManager = authenticationManager;
+        this.tokenUtil = tokenUtil;
     }
 
     @Override
@@ -51,12 +53,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-        TokenUtil tokenUtil = new TokenUtil();
         // pass unique value about user
         String accessToken = tokenUtil.GetToken(request, user, roles, 1*6000);
         String refreshToken = tokenUtil.GetRefreshToken(request, user, 60 * 24);
-//        response.setHeader("access_token", accessToken);
-//        response.setHeader("refresh_token", refreshToken);
+        response.setHeader("access_token", accessToken);
+        response.setHeader("refresh_token", refreshToken);
         try {
             tokenUtil.packTokensToFront(response, accessToken, refreshToken);
         } catch (IOException exception){

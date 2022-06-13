@@ -6,7 +6,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.newsrestapi.model.AppUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.annotation.Transient;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,7 +21,7 @@ import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-
+@Component
 public class TokenUtil {
     public static final Algorithm ALGORITHM = Algorithm.HMAC256("secret".getBytes());
 

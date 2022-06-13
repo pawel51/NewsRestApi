@@ -3,6 +3,7 @@ package com.example.newsrestapi.security;
 
 import com.example.newsrestapi.filter.CustomAuthenticationFilter;
 import com.example.newsrestapi.filter.CustomAuthorizationFilter;
+import com.example.newsrestapi.utils.TokenUtil;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setExposedHeaders(List.of("Authorization", "Access-Control-Allow-Origin"));
 
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean(), new TokenUtil());
         customAuthenticationFilter.setFilterProcessesUrl("/api/login"); // change /login to /api/login
         // disable csrf, and cors
         http.csrf().disable().cors().configurationSource(request -> corsConfiguration);
