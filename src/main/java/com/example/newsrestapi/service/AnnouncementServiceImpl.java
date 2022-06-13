@@ -47,7 +47,7 @@ public class AnnouncementServiceImpl implements AnnouncementService{
 
     @Override
     public List<Announcement> findAllByApplicationUserID(long applicationUserID) {
-        List<Announcement> announcementList = announcementRepository.findAllByUserID(applicationUserID);
+        List<Announcement> announcementList = announcementRepository.findAllByAppUserId(applicationUserID);
         Collections.sort(announcementList);
         return announcementList;
     }

@@ -81,6 +81,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findAll();
     }
 
+    @Override
+    public AppUser getUserById (Long userID) {
+        return userRepo.getAppUserById(userID);
+    }
 
 
 }

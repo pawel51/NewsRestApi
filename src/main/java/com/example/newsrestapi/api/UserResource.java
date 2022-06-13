@@ -109,6 +109,12 @@ public class UserResource {
         return user.getRoles();
     }
 
+    @GetMapping("/user")
+    public long getUserId(Principal principal){
+        AppUser user = userService.getUser(principal.getName());
+        return user.getId();
+    }
+
     // przypisanie roli do użytkownika
     @PostMapping("/role/addtouser")
     public ResponseEntity<?> addRolToUser(@RequestBody RoleToUserForm form){
