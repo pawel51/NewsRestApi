@@ -11,8 +11,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,14 +110,38 @@ public class UserResource {
     }
 
     // przypisanie roli do użytkownika
-    @PostMapping("/role/addtouser/{username}")
-    public ResponseEntity<?> addRoleToUser(@PathVariable String username, @RequestBody ArrayList roles){
+//    @PutMapping ("/role/addtouser/{username}")
+//    public ResponseEntity<?> addRoleToUser(@PathVariable String username, @RequestBody ArrayList roles){
+//
+//        for (int i = 0; i < roles.toArray().length; i++) {
+//            userService.addRoleToUser(userService.getUser(username).toString(), roles.get(i).toString());
+//        }
+//
+//        return ResponseEntity.ok().build();
+//    }
 
-        for (int i = 0; i < roles.toArray().length; i++) {
-            userService.addRoleToUser(userService.getUser(username).toString(), roles.get(i).toString());
+    @PutMapping("/role/addtouser/{username}")
+    public ResponseEntity <AppUser> editUser(@PathVariable String username, @RequestBody UserDto user) {
+
+        AppUser appUser = userService.getUser(user.getUsername());
+        if(appUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category doesnt exist");
+        }
+        else {
+            AppUser modifiedUser = modelMapper.map(user, AppUser.class);
+            modifiedUser.setPassword(appUser.getPassword());
+
+//            String [] roles = user.getRoles();
+//            ArrayList<Role> rolesList = new ArrayList<>();
+//            for (String role : roles) {
+//                RolesEnum rolename = RolesEnum.valueOf(role);
+//
+//                //rolesList.add(new Role(rolename));
+//            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(modifiedUser));
         }
 
-        return ResponseEntity.ok().build();
     }
 
 

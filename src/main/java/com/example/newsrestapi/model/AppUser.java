@@ -3,6 +3,7 @@ package com.example.newsrestapi.model;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class AppUser {
     private String username;
     private String password;
     // load all roles whenever i load user
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Collection<Role> roles = new ArrayList<>();
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonBackReference

@@ -47,6 +47,7 @@ public class NewsRestApiApplication {
             userService.addRoleToUser("John Travolta", ROLE_ADMIN.toString());
             userService.addRoleToUser("John Travolta", ROLE_MANAGER.toString());
             userService.addRoleToUser("Uma Thurman", ROLE_USER.toString());
+            userService.addRoleToUser("Bruce Willic", ROLE_USER.toString());
 
             Category category = new Category(null, "Jobs", new ArrayList<>());
             categoryService.create(category);
