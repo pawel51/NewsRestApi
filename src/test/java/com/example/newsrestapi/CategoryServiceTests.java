@@ -33,7 +33,7 @@ public class CategoryServiceTests {
         categoryService.create(category);
 
         //assert
-        Assertions.assertNotEquals(0, category.getId());
+        Assertions.assertNotNull(category.getId());
     }
     @Test
     public void findAll_ShouldFindTwoCategories()
