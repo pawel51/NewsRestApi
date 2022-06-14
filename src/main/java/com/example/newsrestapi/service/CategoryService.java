@@ -10,5 +10,6 @@ public interface CategoryService {
     Category update(Category category);
     Category findById(Long id);
     List<Category> findAll();
+    void deleteAll();
     boolean IsCategoryNameInDatabase(String name);
 }

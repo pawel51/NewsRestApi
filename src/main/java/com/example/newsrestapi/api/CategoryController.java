@@ -1,8 +1,11 @@
 package com.example.newsrestapi.api;
 
 import com.example.newsrestapi.model.Announcement;
+import com.example.newsrestapi.model.AppUser;
 import com.example.newsrestapi.model.Category;
 import com.example.newsrestapi.service.CategoryService;
+import com.example.newsrestapi.service.EmailService;
+import com.example.newsrestapi.service.EmailServiceImpl;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import dto.AnnouncementDTO;
 import dto.CategoryDTO;

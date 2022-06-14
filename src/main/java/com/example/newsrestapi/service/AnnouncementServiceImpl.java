@@ -60,6 +60,11 @@ public class AnnouncementServiceImpl implements AnnouncementService{
     }
 
     @Override
+    public void deleteAll() {
+        announcementRepository.deleteAll();
+    }
+
+    @Override
     public List<Announcement> findAll() {
         List<Announcement> announcementList = announcementRepository.findAll();
         Collections.sort(announcementList);
