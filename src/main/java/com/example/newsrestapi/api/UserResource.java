@@ -6,7 +6,9 @@ import com.example.newsrestapi.service.UserService;
 import com.example.newsrestapi.utils.TokenUtil;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dto.RoleDTO;
 import dto.UserDto;
+import dto.UserRegistrationDTO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,8 @@ import java.net.URI;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -92,9 +96,18 @@ public class UserResource {
 
     // zapisuje użytkownika do bazy (rejestracja)
     @PostMapping("/users/save")
-    public ResponseEntity<AppUser> saveUser(@RequestBody AppUser user){
+    public ResponseEntity<AppUser> saveUser(@RequestBody UserRegistrationDTO user){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+
+        // Set user default role to user
+        RoleDTO userRole = new RoleDTO(1L, "ROLE_USER");
+        Role mappedUserRole = modelMapper.map(userRole, Role.class);
+        ArrayList<Role> roles = new ArrayList<>();
+        roles.add(mappedUserRole);
+
+        AppUser appUser = new AppUser(null, user.getEmail(), user.getUsername(), user.getPassword(), roles, new ArrayList<>());
+
+        return ResponseEntity.created(uri).body(userService.saveUser(appUser));
     }
 
     // dodawanie roli przez endpoint (trzeba updatować RolesEnum przy dodawaniu)

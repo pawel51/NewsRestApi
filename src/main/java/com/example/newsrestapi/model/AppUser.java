@@ -28,7 +28,7 @@ public class AppUser {
     private String username;
     private String password;
     // load all roles whenever i load user
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     private Collection<Role> roles = new ArrayList<>();
     @OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JsonBackReference
