@@ -12,6 +12,9 @@ public interface AnnouncementService {
     Announcement getAnnouncement(long id);
     List<Announcement> findAllByApplicationUserID(long applicationUserID);
     List<Announcement> findAllByCategoryID(long categoryID);
+    List<Announcement> findAllPublic();
+    List<Announcement> findAllNotPublic();
+    List<Announcement> findAllArchived();
     void deleteAll();
     List<Announcement> findAll();
 }

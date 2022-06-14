@@ -49,7 +49,7 @@ public class AnnouncementController {
             announcement.setAppUser(user);
         }
 
-        //TODO Set Creation date
+        announcement.setCreationDate(new Date());
         return ResponseEntity.status(HttpStatus.OK).body(announcementService.create(announcement));
 
     }
@@ -87,7 +87,6 @@ public class AnnouncementController {
     @GetMapping(path = {"users/{userID}/announcements", "announcements/byuserid/{userID}"})
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncementsByUserID(@PathVariable Long userID)
     {
-
         AppUser appUser = userService.getUserById(userID);
         if(appUser == null)
         {
@@ -97,6 +96,21 @@ public class AnnouncementController {
         {
             return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllByApplicationUserID(userID)));
         }
+    }
+    @GetMapping(path = "announcements/public")
+    public ResponseEntity<List<AnnouncementDTO>> getPublicAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllPublic()));
+    }
+    @GetMapping(path = "announcements/notpublic")
+    public ResponseEntity<List<AnnouncementDTO>> getNotPublicAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllNotPublic()));
+    }
+    @GetMapping(path = "announcements/archived")
+    public ResponseEntity<List<AnnouncementDTO>> getArchivedAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllArchived()));
     }
     @GetMapping("announcements/states")
     public List<String> getStatuses(){

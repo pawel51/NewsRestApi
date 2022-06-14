@@ -10,4 +10,7 @@ import java.util.List;
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
     List<Announcement> findAllByCategoryID(long categoryID);
     List<Announcement> findAllByAppUserId(long userID);
+    List<Announcement> findAllPublic();
+    List<Announcement> findAllNotPublic();
+    List<Announcement> findAllArchived();
 }

@@ -60,6 +60,27 @@ public class AnnouncementServiceImpl implements AnnouncementService{
     }
 
     @Override
+    public List<Announcement> findAllPublic() {
+        List<Announcement> announcementList = announcementRepository.findAllPublic();
+        Collections.sort(announcementList);
+        return announcementList;
+    }
+
+    @Override
+    public List<Announcement> findAllNotPublic() {
+        List<Announcement> announcementList = announcementRepository.findAllNotPublic();
+        Collections.sort(announcementList);
+        return announcementList;
+    }
+
+    @Override
+    public List<Announcement> findAllArchived() {
+        List<Announcement> announcementList = announcementRepository.findAllArchived();
+        Collections.sort(announcementList);
+        return announcementList;
+    }
+
+    @Override
     public void deleteAll() {
         announcementRepository.deleteAll();
     }
