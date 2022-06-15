@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailService{
     @Override
     public void sendEmailAboutAnnouncementPublication(AppUser applicationUser) {
 
-        String subject = "Your Announcement has been published!";
+        String subject = "Your Announcement has been published";
         String content = "Congratulations! Your announcement has been published. We wish you luck!\n\nSincerely,\nANONcement Team";
 
         sendEmail(applicationUser, subject, content);
@@ -52,8 +52,8 @@ public class EmailServiceImpl implements EmailService{
     @Override
     public void sendEmailAboutAnnouncementEnd(AppUser applicationUser) {
 
-        String subject = "Your Announcement has ended!";
-        String content = "Congratulations! Your announcement has ended. We wish you luck!\n\nSincerely,\nANONcement Team";
+        String subject = "Your Announcement has ended";
+        String content = "Unfortunately, your announcement has expired. We encourage you to try again.\n\nSincerely,\nANONcement Team";
 
         sendEmail(applicationUser, subject, content);
     }
