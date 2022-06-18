@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.example.newsrestapi.model.AnnouncementState;
 import lombok.*;
 
 import javax.persistence.*;
@@ -17,7 +18,10 @@ import java.util.Date;
 @Table(name = "Announcement")
 @NamedQueries({
         @NamedQuery(name="Announcement.findAllByCategoryID", query="SELECT a FROM Announcement a WHERE a.category.id = :categoryID"),
-        @NamedQuery(name="Announcement.findAllByUserID", query="SELECT a FROM Announcement a WHERE a.appUser.id = :appUserID")
+        @NamedQuery(name="Announcement.findAllByUserID", query="SELECT a FROM Announcement a WHERE a.appUser.id = :appUserID"),
+        @NamedQuery(name="Announcement.findAllPublic", query="SELECT a FROM Announcement a WHERE a.announcementState = com.example.newsrestapi.model.AnnouncementState.Public"),
+        @NamedQuery(name="Announcement.findAllNotPublic", query="SELECT a FROM Announcement a WHERE a.announcementState = com.example.newsrestapi.model.AnnouncementState.NotPublic"),
+        @NamedQuery(name="Announcement.findAllArchived", query="SELECT a FROM Announcement a WHERE a.announcementState = com.example.newsrestapi.model.AnnouncementState.Archived")
 })
 @JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,

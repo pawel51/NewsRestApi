@@ -2,9 +2,11 @@ package com.example.newsrestapi;
 
 import com.example.newsrestapi.model.Announcement;
 import com.example.newsrestapi.model.AnnouncementState;
+import com.example.newsrestapi.model.AppUser;
 import com.example.newsrestapi.model.Category;
 import com.example.newsrestapi.service.AnnouncementService;
 import com.example.newsrestapi.service.CategoryService;
+import com.example.newsrestapi.service.UserService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +24,8 @@ public class AnnouncementServiceTests {
     CategoryService categoryService;
     @Autowired
     AnnouncementService announcementService;
-
+    @Autowired
+    UserService userService;
     @Test
     public void create_ShouldCreateAnnouncement() {
         //arrange
@@ -61,7 +64,57 @@ public class AnnouncementServiceTests {
         //assert
         Assertions.assertEquals(3, announcements.size());
     }
+    @Test
+    public void findAllPublic_ShouldReturnTwoAnnouncements()
+    {
+        //arrange
+        Category category = createCategoryAndSaveToDB();
+        Announcement announcement1 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement2 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement3 = createAnnouncement(category);
+        announcement3.setAnnouncementState(AnnouncementState.NotPublic);
+        announcementService.create(announcement3);
 
+        //act
+        List<Announcement> announcements = announcementService.findAllPublic();
+
+        //assert
+        Assertions.assertEquals(2, announcements.size());
+    }
+    @Test
+    public void findAllNotPublic_ShouldReturnOneAnnouncement()
+    {
+        //arrange
+        Category category = createCategoryAndSaveToDB();
+        Announcement announcement1 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement2 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement3 = createAnnouncement(category);
+        announcement3.setAnnouncementState(AnnouncementState.NotPublic);
+        announcementService.create(announcement3);
+
+        //act
+        List<Announcement> announcements = announcementService.findAllNotPublic();
+
+        //assert
+        Assertions.assertEquals(1, announcements.size());
+    }
+    @Test
+    public void findAllArchived_ShouldReturnTwoAnnouncements()
+    {
+        //arrange
+        Category category = createCategoryAndSaveToDB();
+        Announcement announcement1 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement2 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement3 = createAnnouncement(category);
+        announcement3.setAnnouncementState(AnnouncementState.Archived);
+        announcementService.create(announcement3);
+
+        //act
+        List<Announcement> announcements = announcementService.findAllArchived();
+
+        //assert
+        Assertions.assertEquals(1, announcements.size());
+    }
     @Test
     public void findAllByCategoryID_ShouldReturnTwoAnnouncements()
     {
@@ -82,16 +135,21 @@ public class AnnouncementServiceTests {
     @Test
     public void findAllByApplicationUserID_ShouldReturnTwoAnnouncements()
     {
-        //TO DO: IMPLEMENT USER RELATED TEST ///////////////
         //arrange
-        Category category1 = createCategoryAndSaveToDB();
-        Category category2 = createCategoryAndSaveToDB("Internship Offers");
-        Announcement announcement1 = createAnnouncementAndSaveToDB(category1);
-        Announcement announcement2 = createAnnouncementAndSaveToDB(category1);
-        Announcement announcement3 = createAnnouncementAndSaveToDB(category2);
+        Category category = createCategoryAndSaveToDB();
+        AppUser applicationUser = new AppUser();
+        applicationUser.setPassword("****");
+        userService.saveUser(applicationUser);
+        Announcement announcement1 = createAnnouncementAndSaveToDB(category);
+        Announcement announcement2 = createAnnouncement(category);
+        Announcement announcement3 = createAnnouncement(category);
+        announcement2.setAppUser(applicationUser);
+        announcement3.setAppUser(applicationUser);
+        announcementService.create(announcement2);
+        announcementService.create(announcement3);
 
         //act
-        List<Announcement> announcements = announcementService.findAllByCategoryID(category1.getId());
+        List<Announcement> announcements = announcementService.findAllByApplicationUserID(applicationUser.getId());
 
         //assert
         Assertions.assertEquals(2, announcements.size());

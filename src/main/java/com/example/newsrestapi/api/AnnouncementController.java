@@ -6,9 +6,11 @@ import com.example.newsrestapi.model.AppUser;
 import com.example.newsrestapi.model.Category;
 import com.example.newsrestapi.service.AnnouncementService;
 import com.example.newsrestapi.service.CategoryService;
+import com.example.newsrestapi.service.EmailService;
 import com.example.newsrestapi.service.UserService;
 import dto.AnnouncementDTO;
 //import dto.StatusDto;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,27 +19,28 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 @RestController
 @RequestMapping("api/")
 public class AnnouncementController {
     private final AnnouncementService announcementService;
     private final CategoryService categoryService;
     private final UserService userService;
+    private final EmailService emailService;
     private final ModelMapper modelMapper;
     @Autowired
-    public AnnouncementController(AnnouncementService announcementService, CategoryService categoryService, com.example.newsrestapi.service.UserService userService,
-                                  ModelMapper modelMapper) {
+    public AnnouncementController(AnnouncementService announcementService, CategoryService categoryService, UserService userService,
+                                  EmailService emailService, ModelMapper modelMapper) {
         this.announcementService = announcementService;
         this.categoryService = categoryService;
         this.userService = userService;
+        this.emailService = emailService;
         this.modelMapper = modelMapper;
     }
     @PostMapping(path="announcements")
@@ -49,7 +52,7 @@ public class AnnouncementController {
             announcement.setAppUser(user);
         }
 
-        //TODO Set Creation date
+        announcement.setCreationDate(new Date());
         return ResponseEntity.status(HttpStatus.OK).body(announcementService.create(announcement));
 
     }
@@ -87,7 +90,6 @@ public class AnnouncementController {
     @GetMapping(path = {"users/{userID}/announcements", "announcements/byuserid/{userID}"})
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncementsByUserID(@PathVariable Long userID)
     {
-
         AppUser appUser = userService.getUserById(userID);
         if(appUser == null)
         {
@@ -97,6 +99,21 @@ public class AnnouncementController {
         {
             return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllByApplicationUserID(userID)));
         }
+    }
+    @GetMapping(path = "announcements/public")
+    public ResponseEntity<List<AnnouncementDTO>> getPublicAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllPublic()));
+    }
+    @GetMapping(path = "announcements/notpublic")
+    public ResponseEntity<List<AnnouncementDTO>> getNotPublicAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllNotPublic()));
+    }
+    @GetMapping(path = "announcements/archived")
+    public ResponseEntity<List<AnnouncementDTO>> getArchivedAnnouncements()
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllArchived()));
     }
     @GetMapping("announcements/states")
     public List<String> getStatuses(){
@@ -131,8 +148,23 @@ public class AnnouncementController {
         }
         else
         {
+            AnnouncementState previousState = announcementFromDB.getAnnouncementState();
             announcementDTO.setId(id);
-            return ResponseEntity.status(HttpStatus.OK).body(announcementService.update(ConvertFromDTO(List.of(announcementDTO)).get(0)));
+            ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.OK).body(announcementService.update(
+                    ConvertFromDTO(List.of(announcementDTO)).get(0)));
+            if(previousState == AnnouncementState.NotPublic && announcementDTO.getAnnouncementState() == AnnouncementState.Public)
+            {
+                AppUser appUser = userService.getUserById(announcementDTO.getAppUserId());
+                try{
+                    //ENABLE IN FINAL VERSION OF APP
+                    //emailService.sendEmailAboutAnnouncementPublication(appUser);
+                }
+                catch (Exception e)
+                {
+                    log.error(e.getMessage());
+                }
+            }
+            return responseEntity;
         }
     }
     private List<AnnouncementDTO> ConvertToDTO(List<Announcement> announcementList)
