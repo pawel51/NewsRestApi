@@ -60,6 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // ustaw dostęp tylko dla admina
         http.authorizeRequests().antMatchers(GET, "/api/users/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
         http.authorizeRequests().antMatchers(POST, "/api/users/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
+        http.authorizeRequests().antMatchers(POST, "/api/users/save").permitAll();
+
         http.authorizeRequests().antMatchers(GET, "/api/adminpanel/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
 
 
