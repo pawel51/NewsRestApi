@@ -9,6 +9,7 @@ import com.example.newsrestapi.service.EmailServiceImpl;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import dto.AnnouncementDTO;
 import dto.CategoryDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("api/categories")
 public class CategoryController {
@@ -38,6 +40,8 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody CategoryDTO categoryDTO)
     {
+        log.info("creating category");
+
         UserSecurityCheck();
         if(categoryService.IsCategoryNameInDatabase(categoryDTO.getName()))
         {
@@ -51,11 +55,13 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getCategories()
     {
+        log.info("getting all categories");
         return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(categoryService.findAll()));
     }
     @GetMapping(path = "{id}")
     public ResponseEntity<CategoryDTO> getCategoryByID(@PathVariable("id") Long id)
     {
+        log.info("getting category with {} id", id);
         Category category = categoryService.findById(id);
         if(category == null)
         {
@@ -69,6 +75,7 @@ public class CategoryController {
     @DeleteMapping(path = "{id}")
     public void deleteCategory(@PathVariable("id") Long id)
     {
+        log.info("deleting category with {} id", id);
         UserSecurityCheck();
         Category category = categoryService.findById(id);
         if(category == null)
@@ -89,6 +96,7 @@ public class CategoryController {
     @PutMapping("{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable("id") Long id, @RequestBody CategoryDTO categoryDTO)
     {
+        log.info("updating category with {} id", id);
         UserSecurityCheck();
         Category categoryFromDB = categoryService.findById(id);
         if(categoryFromDB == null)

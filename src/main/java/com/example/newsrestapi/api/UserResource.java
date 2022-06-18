@@ -40,6 +40,8 @@ public class UserResource {
     private final ModelMapper modelMapper;
     private final TokenUtil tokenUtil;
 
+
+
     // Odnawia access_token używając do tego refresh_token
     @GetMapping("/refreshtoken")
     public void refreshToken (HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -79,6 +81,7 @@ public class UserResource {
     // pobiera wszystkich użytkowników
     @GetMapping("/users")
     public ResponseEntity<List<UserDto>> getUsers(){
+        log.info("get all users from database");
 
         return ResponseEntity.ok().body(
                 userService.getUsers()
@@ -89,6 +92,8 @@ public class UserResource {
 
     @GetMapping("/users/edit/{username}")
     public ResponseEntity <UserDto> editUser(@PathVariable String username) {
+        log.info("get users with specific username from database");
+
         return ResponseEntity.ok().body(
                 modelMapper.map(userService.getUser(username), UserDto.class)
         );
@@ -97,6 +102,8 @@ public class UserResource {
     // zapisuje użytkownika do bazy (rejestracja)
     @PostMapping("/users/save")
     public ResponseEntity<AppUser> saveUser(@RequestBody UserRegistrationDTO user){
+        log.info("save user to database");
+
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
 
         // Set user default role to user
@@ -113,6 +120,8 @@ public class UserResource {
     // dodawanie roli przez endpoint (trzeba updatować RolesEnum przy dodawaniu)
     @PostMapping("/role/save")
     public ResponseEntity<Role> saveRole(@RequestBody Role role){
+        log.info("add role for user using endpoint");
+
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
@@ -133,6 +142,8 @@ public class UserResource {
     // przypisanie roli do użytkownika
     @PostMapping("/role/addtouser")
     public ResponseEntity<?> addRolToUser(@RequestBody RoleToUserForm form){
+        log.info("add role for user");
+
         userService.addRoleToUser(form.getUsername(), form.getRolename());
         return ResponseEntity.ok().build();
     }

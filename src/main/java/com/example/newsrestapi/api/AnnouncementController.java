@@ -46,6 +46,7 @@ public class AnnouncementController {
     @PostMapping(path="announcements")
     public ResponseEntity<Announcement> createAnnouncement(Principal principal, @RequestBody AnnouncementDTO announcementDTO)
     {
+        log.info("creating announcement");
         AppUser user = userService.getUser(principal.getName());
         Announcement announcement = ConvertFromDTO(List.of(announcementDTO)).get(0);
         if (user != null){
@@ -59,11 +60,13 @@ public class AnnouncementController {
     @GetMapping(path="announcements")
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncements()
     {
+        log.info("getting all announcements");
         return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAll()));
     }
     @GetMapping(path = "announcements/{id}")
     public ResponseEntity<AnnouncementDTO> getAnnouncement(@PathVariable Long id)
     {
+        log.info("getting announcement with {} id", id);
         Announcement announcement = announcementService.getAnnouncement(id);
         if(announcement == null)
         {
@@ -77,9 +80,12 @@ public class AnnouncementController {
     @GetMapping(path = {"categories/{categoryID}/announcements", "announcements/bycategoryid/{categoryID}"})
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncementsByCategoryID(@PathVariable Long categoryID)
     {
+        log.info("getting all announcement from category with {} id", categoryID);
+
         Category category = categoryService.findById(categoryID);
         if(category == null)
         {
+            log.error("category with {} id doesn't exist", categoryID);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "category doesnt exist");
         }
         else
@@ -90,9 +96,12 @@ public class AnnouncementController {
     @GetMapping(path = {"users/{userID}/announcements", "announcements/byuserid/{userID}"})
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncementsByUserID(@PathVariable Long userID)
     {
+        log.info("getting all announcement from user with {} id", userID);
+
         AppUser appUser = userService.getUserById(userID);
         if(appUser == null)
         {
+            log.error("user with {} id doesn't exist", userID);
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user doesnt exist");
         }
         else
@@ -103,11 +112,13 @@ public class AnnouncementController {
     @GetMapping(path = "announcements/public")
     public ResponseEntity<List<AnnouncementDTO>> getPublicAnnouncements()
     {
+        log.info("getting all public announcements");
         return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllPublic()));
     }
     @GetMapping(path = "announcements/notpublic")
     public ResponseEntity<List<AnnouncementDTO>> getNotPublicAnnouncements()
     {
+        log.info("getting all not public announcements");
         return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAllNotPublic()));
     }
     @GetMapping(path = "announcements/archived")
@@ -117,6 +128,8 @@ public class AnnouncementController {
     }
     @GetMapping("announcements/states")
     public List<String> getStatuses(){
+        log.info("getting all archived announcements");
+
         List<String> enumNames = Stream.of(AnnouncementState.values())
                 .map(Enum::name)
                 .collect(Collectors.toList());
@@ -128,6 +141,7 @@ public class AnnouncementController {
     @DeleteMapping(path = "announcements/{id}")
     public void deleteAnnouncement(@PathVariable("id") Long id)
     {
+        log.info("deleting announcement with {} id", id);
         Announcement announcement = announcementService.getAnnouncement(id);
         if(announcement == null)
         {
@@ -141,10 +155,11 @@ public class AnnouncementController {
     @PutMapping("announcements/{id}")
     public ResponseEntity<Announcement> updateAnnouncement(@PathVariable("id") Long id, @RequestBody AnnouncementDTO announcementDTO)
     {
+        log.info("updating announcement with {} id", id);
         Announcement announcementFromDB = announcementService.getAnnouncement(id);
         if(announcementFromDB == null)
         {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category doesnt exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement doesnt exist");
         }
         else
         {

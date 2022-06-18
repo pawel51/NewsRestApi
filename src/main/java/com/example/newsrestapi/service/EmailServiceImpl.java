@@ -1,6 +1,7 @@
 package com.example.newsrestapi.service;
 
 import com.example.newsrestapi.model.AppUser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -16,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailService{
     private Properties properties;
     private Session session;
@@ -60,6 +62,7 @@ public class EmailServiceImpl implements EmailService{
 
     private void sendEmail(AppUser applicationUser, String subject, String content)
     {
+        log.info("Sending email to {}", applicationUser.getEmail());
         try{
 
             OAuthClient client = new OAuthClient(new URLConnectionClient());
@@ -76,6 +79,7 @@ public class EmailServiceImpl implements EmailService{
 
         }catch (Exception e)
         {
+            log.error("Cannot get acces Token");
             e.printStackTrace();
         }
 
@@ -93,8 +97,10 @@ public class EmailServiceImpl implements EmailService{
             //Transport t = new SMTPSSLTransport(session, new URLName("SMTP", "smtp.gmail.com", 465, null, applicationUser.getEmail(), token));
             //t.sendMessage(message, new Address[]{ new InternetAddress(applicationUser.getEmail()) });
             Transport.send(message, senderEmail, token);
+            log.info("email sent to {}", applicationUser.getEmail());
         } catch (MessagingException me)
         {
+            log.error("Cannot send email to {}", applicationUser.getEmail());
             me.printStackTrace();
         }
     }
