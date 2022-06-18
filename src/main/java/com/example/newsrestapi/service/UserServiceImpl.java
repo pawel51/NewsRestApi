@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.save(user);
     }
 
+    public AppUser updateUser (AppUser user){
+        log.info("Updating user {} to database", user.getUsername());
+        return userRepo.save(user);
+    }
+
     @Override
     public Role saveRole (Role role) {
         log.info("Adding new role {} to database", role.getName());
@@ -85,6 +90,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public AppUser getUserById (Long userID) {
         return userRepo.getAppUserById(userID);
     }
+
+
 
 
 }

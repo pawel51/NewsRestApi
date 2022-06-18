@@ -61,7 +61,11 @@ public class AnnouncementController {
     public ResponseEntity<List<AnnouncementDTO>> getAnnouncements()
     {
         log.info("getting all announcements");
-        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(announcementService.findAll()));
+        return ResponseEntity.status(HttpStatus.OK).body(ConvertToDTO(
+                announcementService.findAll().stream()
+                        .filter(e -> e.getAnnouncementState() == AnnouncementState.Public)
+                        .collect(Collectors.toList())
+        ));
     }
     @GetMapping(path = "announcements/{id}")
     public ResponseEntity<AnnouncementDTO> getAnnouncement(@PathVariable Long id)

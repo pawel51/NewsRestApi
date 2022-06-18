@@ -170,15 +170,7 @@ public class UserResource {
             AppUser modifiedUser = modelMapper.map(user, AppUser.class);
             modifiedUser.setPassword(appUser.getPassword());
 
-//            String [] roles = user.getRoles();
-//            ArrayList<Role> rolesList = new ArrayList<>();
-//            for (String role : roles) {
-//                RolesEnum rolename = RolesEnum.valueOf(role);
-//
-//                //rolesList.add(new Role(rolename));
-//            }
-
-            return ResponseEntity.status(HttpStatus.OK).body(userService.saveUser(modifiedUser));
+            return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(modifiedUser));
         }
 
     }
