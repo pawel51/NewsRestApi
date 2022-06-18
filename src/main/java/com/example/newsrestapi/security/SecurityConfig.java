@@ -6,6 +6,7 @@ import com.example.newsrestapi.filter.CustomAuthorizationFilter;
 import com.example.newsrestapi.utils.TokenUtil;
 import com.example.newsrestapi.utils.enums.RolesEnum;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Delete;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,8 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -51,11 +51,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         // order matters write permitall first!
-//        http.authorizeRequests().antMatchers("/api/users/").permitAll();
+        // http.authorizeRequests().antMatchers("/api/users/").permitAll();
 
         // dostęp dla wszystkich
         http.authorizeRequests().antMatchers("/api/login/**", "/api/refreshtoken/**").permitAll();
         http.authorizeRequests().antMatchers(POST,"/api/users/save", "/api/refreshtoken/**").permitAll();
+
+        // ogłoszenia
+        http.authorizeRequests().antMatchers(GET, "/api/users/**/announcements").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/states").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/byuserid/**").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/public").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/categories/**/announcements").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/bycategoryid/**").permitAll();
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/notpublic").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString(),
+                RolesEnum.ROLE_MANAGER.toString());
+        http.authorizeRequests().antMatchers(GET, "/api/announcements/archived").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString(),
+                RolesEnum.ROLE_MANAGER.toString());
+        http.authorizeRequests().antMatchers(GET, "/api/announcements").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
+//      http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
 
         // ustaw dostęp tylko dla admina
         http.authorizeRequests().antMatchers(GET, "/api/users/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
@@ -64,8 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers(GET, "/api/adminpanel/**").hasAnyAuthority(RolesEnum.ROLE_ADMIN.toString());
 
-
-//      http.authorizeRequests().antMatchers(POST, "/api/user/save/**").hasAnyAuthority("ROLE_ADMIN");
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
