@@ -1,13 +1,11 @@
 package com.example.newsrestapi.api;
 
-import com.example.newsrestapi.model.Announcement;
-import com.example.newsrestapi.model.AnnouncementState;
-import com.example.newsrestapi.model.AppUser;
-import com.example.newsrestapi.model.Category;
+import com.example.newsrestapi.model.*;
 import com.example.newsrestapi.service.AnnouncementService;
 import com.example.newsrestapi.service.CategoryService;
 import com.example.newsrestapi.service.EmailService;
 import com.example.newsrestapi.service.UserService;
+import com.example.newsrestapi.utils.enums.RolesEnum;
 import dto.AnnouncementDTO;
 //import dto.StatusDto;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -103,6 +104,7 @@ public class AnnouncementController {
         log.info("getting all announcement from user with {} id", userID);
 
         AppUser appUser = userService.getUserById(userID);
+
         if(appUser == null)
         {
             log.error("user with {} id doesn't exist", userID);
@@ -147,6 +149,12 @@ public class AnnouncementController {
     {
         log.info("deleting announcement with {} id", id);
         Announcement announcement = announcementService.getAnnouncement(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(HasUserRole(authentication) && !IsUserAResourceOwner(authentication, announcement.getAppUser().getId()))
+        {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to delete another user announcement");
+        }
         if(announcement == null)
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement doesnt exist");
@@ -165,26 +173,38 @@ public class AnnouncementController {
         {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Announcement doesnt exist");
         }
-        else
+
+        AnnouncementState previousState = announcementFromDB.getAnnouncementState();
+        announcementDTO.setId(id);
+
+        //do not update if user is not owner of a resource (admin still can)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(HasUserRole(authentication) && !IsUserAResourceOwner(authentication, announcementDTO.getAppUserId()))
         {
-            AnnouncementState previousState = announcementFromDB.getAnnouncementState();
-            announcementDTO.setId(id);
-            ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.OK).body(announcementService.update(
-                    ConvertFromDTO(List.of(announcementDTO)).get(0)));
-            if(previousState == AnnouncementState.NotPublic && announcementDTO.getAnnouncementState() == AnnouncementState.Public)
-            {
-                AppUser appUser = userService.getUserById(announcementDTO.getAppUserId());
-                try{
-                    //ENABLE IN FINAL VERSION OF APP
-                    //emailService.sendEmailAboutAnnouncementPublication(appUser);
-                }
-                catch (Exception e)
-                {
-                    log.error(e.getMessage());
-                }
-            }
-            return responseEntity;
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to update another user announcement");
         }
+
+        if(previousState == AnnouncementState.NotPublic && announcementDTO.getAnnouncementState() == AnnouncementState.Public)
+        {
+            //user can't update state of announcement to public
+            if(authentication.getAuthorities().contains(new SimpleGrantedAuthority(RolesEnum.ROLE_USER.toString())))
+            {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User can't publish an announcement");
+            }
+            AppUser appUser = userService.getUserById(announcementDTO.getAppUserId());
+            try{
+                //ENABLE IN FINAL VERSION OF APP
+                //emailService.sendEmailAboutAnnouncementPublication(appUser);
+            }
+            catch (Exception e)
+            {
+                log.error(e.getMessage());
+            }
+        }
+
+        ResponseEntity responseEntity = ResponseEntity.status(HttpStatus.OK).body(announcementService.update(
+                ConvertFromDTO(List.of(announcementDTO)).get(0)));
+        return responseEntity;
     }
     private List<AnnouncementDTO> ConvertToDTO(List<Announcement> announcementList)
     {
@@ -204,4 +224,15 @@ public class AnnouncementController {
         }
         return  convertedFromDTOAnnouncements;
     }
+    private boolean HasUserRole(Authentication authentication) {
+        return authentication.getAuthorities().contains(new SimpleGrantedAuthority(RolesEnum.ROLE_USER.toString()));
+    }
+    private boolean IsUserAResourceOwner(Authentication authentication, Long resourceID) {
+        AppUser appUser = userService.getUser(authentication.getPrincipal().toString());
+        Long userID = appUser.getId();
+        if(resourceID != userID)
+            return false;
+        return true;
+    }
+
 }
