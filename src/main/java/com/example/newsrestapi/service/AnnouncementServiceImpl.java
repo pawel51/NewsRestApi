@@ -113,8 +113,7 @@ public class AnnouncementServiceImpl implements AnnouncementService{
                 announcement.setAnnouncementState(AnnouncementState.Archived);
                 announcementRepository.save(announcement);
                 count++;
-                //ENABLE IN FINAL VERSION OF APP
-                //emailService.sendEmailAboutAnnouncementEnd(announcement.getAppUser());
+                emailService.sendEmailAboutAnnouncementEnd(announcement.getAppUser());
             }
         }
         log.info("Scheduled Process - CheckExpirationDate() - has been completed. Archived announcements - " + count);

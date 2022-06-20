@@ -191,8 +191,7 @@ public class AnnouncementController {
             }
             AppUser appUser = userService.getUserById(announcementDTO.getAppUserId());
             try{
-                //ENABLE IN FINAL VERSION OF APP
-                //emailService.sendEmailAboutAnnouncementPublication(appUser);
+                emailService.sendEmailAboutAnnouncementPublication(appUser);
             }
             catch (Exception e)
             {
