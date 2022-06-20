@@ -41,19 +41,26 @@ public class NewsRestApiApplication {
             userService.saveRole(new Role(null, RolesEnum.ROLE_ADMIN));
             userService.saveRole(new Role(null, RolesEnum.ROLE_SUPERADMIN));
 
-            AppUser appUser = new AppUser(null, "johnT@wp.pl", "John Travolta",  "1234", new ArrayList<>(), new ArrayList<>());
-            userService.saveUser(appUser);
-            userService.saveUser(new AppUser(null, "butch@protonmail.com", "Bruce Willic", "1234", new ArrayList<>(), new ArrayList<>()));
-            userService.saveUser(new AppUser(null,"kitty1234@o2.pl",  "Katy Parry" , "1234", new ArrayList<>(), new ArrayList<>()));
-            userService.saveUser(new AppUser(null, "umauma@onet.pl", "Uma Thurman" , "1234", new ArrayList<>(), new ArrayList<>()));
+            AppUser admin = new AppUser(null, "johnT@wp.pl", "admin",  "1234", new ArrayList<>(), new ArrayList<>());
+            userService.saveUser(admin);
+            AppUser manager = new AppUser(null, "butch@protonmail.com", "manager", "1234", new ArrayList<>(), new ArrayList<>());
+            userService.saveUser(manager);
+            AppUser user1 = new AppUser(null,"kitty1234@o2.pl",  "user1" , "1234", new ArrayList<>(), new ArrayList<>());
+            userService.saveUser(user1);
+            userService.saveUser(new AppUser(null,"kitty12345@o2.pl",  "user2" , "1234", new ArrayList<>(), new ArrayList<>()));
 
-            userService.addRoleToUser("John Travolta", ROLE_ADMIN.toString());
-            userService.addRoleToUser("John Travolta", ROLE_MANAGER.toString());
-            userService.addRoleToUser("Uma Thurman", ROLE_USER.toString());
-            userService.addRoleToUser("Bruce Willic", ROLE_USER.toString());
+            userService.addRoleToUser("admin", ROLE_ADMIN.toString());
+            userService.addRoleToUser("admin", ROLE_MANAGER.toString());
+            userService.addRoleToUser("manager", ROLE_MANAGER.toString());
+            userService.addRoleToUser("user1", ROLE_USER.toString());
+            userService.addRoleToUser("user2", ROLE_USER.toString());
 
-            Category category = new Category(null, "Jobs", new ArrayList<>());
-            categoryService.create(category);
+            Category categoryJobs = new Category(null, "Jobs", new ArrayList<>());
+            categoryService.create(categoryJobs);
+            Category categoryNews = new Category(null, "News", new ArrayList<>());
+            categoryService.create(categoryNews);
+            Category categoryOffer = new Category(null, "Offers", new ArrayList<>());
+            categoryService.create(categoryOffer);
 
             Date tomorrow = new Date();
             Calendar c = Calendar.getInstance();
@@ -61,7 +68,11 @@ public class NewsRestApiApplication {
             c.add(Calendar.DATE, 1);
             tomorrow = c.getTime();
             announcementService.create(new Announcement(null, "Paint 3D UI designer", "See the title", new Date(), tomorrow,
-                    AnnouncementState.NotPublic, appUser, category));
+                    AnnouncementState.NotPublic, admin, categoryJobs));
+            announcementService.create(new Announcement(null, "Opel Astra for sale", "nice car", new Date(), tomorrow,
+                    AnnouncementState.NotPublic, manager, categoryOffer));
+            announcementService.create(new Announcement(null, "D.Trump chosen for president of USA", "D.Trump chosen for president of USA second time", new Date(), tomorrow,
+                    AnnouncementState.NotPublic, user1, categoryNews));
         };
     }
 }
